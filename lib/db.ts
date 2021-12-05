@@ -1,9 +1,9 @@
 import { initializeApp } from 'firebase/app';
 
 export const app = initializeApp({
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTHDOMAIN,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
-  appId: process.env.API_ID,
+  apiKey: process.env.NEXT_PUBLIC_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_AUTHDOMAIN,
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
+  appId: process.env.NEXT_PUBLIC_API_ID,
 });
