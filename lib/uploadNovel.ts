@@ -7,7 +7,7 @@ import {
   FieldValue,
 } from 'firebase/firestore';
 import { randomBytes } from 'crypto';
-import { app } from './db';
+import { app } from './firebase';
 
 interface Novel {
   title: string;

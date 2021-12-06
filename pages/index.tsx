@@ -1,7 +1,7 @@
 import type { GetStaticProps, NextPage } from 'next';
 import Head from 'next/head';
 import styles from '../styles/Home.module.scss';
-import NovelCard from '../components/novelCard';
+import NovelCard from '../components/novel-card';
 import Header from '../components/header';
 import router from 'next/router';
 import {
@@ -12,7 +12,7 @@ import {
   limit,
   orderBy,
 } from 'firebase/firestore';
-import { app } from '../lib/db';
+import { app } from '../lib/firebase';
 
 const Home: NextPage<{
   novels: { id: string; title: string; image: string }[];
