@@ -1,0 +1,17 @@
+@import "variables.module";
+@import "mixins.module";
+.container {
+  main {
+    background-color: white;
+    height: 93vh;
+    display: grid;
+    padding: 1vw;
+    grid-auto-rows: 25vh;
+    grid-template-columns: auto auto auto;
+    grid-column-gap: 2.5vw;
+    grid-row-gap: 1vh;
+  }
+}
+
+@media (max-width: 600px) {
+}

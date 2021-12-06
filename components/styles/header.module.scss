@@ -1,5 +1,5 @@
-@import "../../styles/variables.module.scss";
-@import "../../styles/mixins.module.scss";
+@import '../../styles/variables.module.scss';
+@import '../../styles/mixins.module.scss';
 .header {
   display: flex;
   justify-content: space-between;
@@ -17,7 +17,8 @@
     color: transparent;
     font-weight: bolder;
   }
-  .createNovelButton {
+  .user {
+    height: 100%;
     text-decoration: underline;
   }
 }

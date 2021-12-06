@@ -1,0 +1,27 @@
+@mixin centerF {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+@mixin centerG {
+  display: grid;
+  place-items: center;
+}
+@mixin fullscreen {
+  width: 100vw;
+  height: 100vh;
+}
+@mixin neonG {
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18,
+    0 0 30px #49ff18, 0 0 40px #49ff18, 0 0 55px #49ff18, 0 0 75px #49ff18;
+}
+@mixin neonR {
+  text-shadow: #fff 0px 0px 5px, #fff 0px 0px 10px, #fff 0px 0px 15px,
+    #ff2d95 0px 0px 20px, #ff2d95 0px 0px 30px, #ff2d95 0px 0px 40px,
+    #ff2d95 0px 0px 50px, #ff2d95 0px 0px 75px;
+}
+@mixin neonB {
+  text-shadow: #fff 0px 0px 5px, #fff 0px 0px 10px, #fff 0px 0px 15px,
+    #1100ff 0px 0px 20px, #1100ff 0px 0px 30px, #1100ff 0px 0px 40px,
+    #1100ff 0px 0px 50px, #1100ff 0px 0px 75px;
+}
