@@ -1,29 +1,51 @@
-import styles from '../styles/CreateNovel.module.scss';
 import Header from '../components/header';
-import { FormEventHandler, useEffect, useRef, useState } from 'react';
-import { uploadNovel } from '../lib/uploadNovel';
+import { FormEventHandler, useEffect, useState } from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Profile from '../components/profile';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import CreateNovel from '../components/create-novel';
+import { app, auth } from '../lib/firebase';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
+import { AUTHORS } from '../lib/constants';
 
 export default function User() {
-  //TODO: add genres to novel
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const imgRef = useRef<HTMLInputElement>(null);
+  const [user, userLoading, userError] = useAuthState(auth);
+  const firestore = getFirestore(app);
+  const docRef = user ? doc(firestore, AUTHORS, user.uid) : null;
+  const [data, dataLoading, dataError] = useDocumentDataOnce(docRef, {
+    idField: 'id',
+  });
+  const [authorName, setAuthorName] = useState('');
+  if (userLoading || dataLoading) return <h1>Loading...</h1>;
+  if (!user) return <h1>401 Not Authenticated</h1>;
 
   const handleSubmit: FormEventHandler = async e => {
     e.preventDefault();
-    const imgFile = imgRef.current?.files?.item(0);
-    if (!imgFile) return;
-    await uploadNovel({
-      authorName: 'Sachin',
-      description,
-      title,
-      image: imgFile,
+    const firestore = getFirestore();
+    await setDoc(doc(firestore, AUTHORS, user.uid), {
+      authorName,
     });
+    document.location.reload();
   };
+
+  if (!data)
+    return (
+      <form onSubmit={handleSubmit}>
+        <label htmlFor='authorName'>Author Name: </label>
+        <input
+          type='text'
+          name='authorName'
+          id='authorName'
+          value={authorName}
+          onChange={e => setAuthorName(e.target.value)}
+        />
+        <button type='submit'>Submit</button>
+      </form>
+    );
+
   return (
-    <div className={styles.container}>
+    <div>
       <Header />
       <main>
         <Tabs>
@@ -42,42 +64,10 @@ export default function User() {
             <h1>Novels</h1>
           </TabPanel>
           <TabPanel>
-            <form onSubmit={handleSubmit}>
-              <label htmlFor='title'>Name:</label>
-              <input
-                onChange={e => setTitle(e.target.value)}
-                type='text'
-                id='title'
-                value={title}
-              />
-              <label htmlFor='img'>Image</label>
-              <input
-                type='file'
-                name='img'
-                id='img'
-                accept='image/*'
-                ref={imgRef}
-              />
-              <label htmlFor='description'>Description:</label>
-              <textarea
-                onChange={e => setDescription(e.target.value)}
-                name='des'
-                id='des'
-                value={description}
-              ></textarea>
-              {/* <label htmlFor='genres'>Genres:</label>
-                <select name='genres' id='genres' multiple>
-                <option value='Adventure'>Adventure</option>
-                <option value='Isekai'>Isekai</option>
-                <option value='Romance'>Romance</option>
-                <option value='Action'>Action</option>
-                <option value='Fantasy'>Fantasy</option>
-              </select> */}
-              <button type='submit'>Create Novel</button>
-            </form>
+            <CreateNovel />
           </TabPanel>
           <TabPanel>
-            <Profile />
+            <Profile profileInfo={data} />
           </TabPanel>
         </Tabs>
       </main>

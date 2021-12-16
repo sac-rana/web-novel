@@ -4,15 +4,15 @@ import {
   addDoc,
   collection,
   serverTimestamp,
-  FieldValue,
+  getDoc,
+  doc,
 } from 'firebase/firestore';
-import { randomBytes } from 'crypto';
-import { app } from './firebase';
+import { app, auth } from './firebase';
+import { AUTHORS } from './constants';
 
 interface Novel {
   title: string;
   description: string;
-  authorName: string;
   image: File;
 }
 
@@ -27,15 +27,16 @@ interface Novel {
 // }
 
 //TODO: take auth object as input in function to set authorName
-export const uploadNovel = async (novel: Novel) => {
+export const uploadNovel = async (id: string, novel: Novel) => {
   //TODO: verify data given by user
+  const firestore = getFirestore(app);
+  const uid = auth.currentUser!.uid;
+  const authorName = await getDoc(doc(firestore, AUTHORS));
   const storage = getStorage(app);
-  const imageId = randomBytes(16).toString('hex');
-  const storageRef = ref(storage, imageId);
+  const storageRef = ref(storage, 'novel-images');
   const snapshot = await uploadBytes(storageRef, novel.image);
   const url = await getDownloadURL(snapshot.ref);
-  const firestore = getFirestore(app);
-  await addDoc(collection(firestore, 'novels'), {
+  await addDoc(collection(firestore, 'novels', id), {
     title: novel.title,
     description: novel.description,
     image: url,

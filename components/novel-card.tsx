@@ -16,10 +16,6 @@ export default function NovelCard({
       <Link href={`/${key}`}>
         <a>
           <Image src={image} alt={title} />
-        </a>
-      </Link>
-      <Link href={`/${key}`}>
-        <a>
           <h3>{title}</h3>
         </a>
       </Link>

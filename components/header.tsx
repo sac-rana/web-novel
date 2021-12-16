@@ -5,7 +5,7 @@ import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 export default function Header() {
-  const [user, loading, error] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const router = useRouter();
   const SignIn = () => {
     signInWithPopup(auth, new GoogleAuthProvider());

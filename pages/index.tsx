@@ -3,7 +3,6 @@ import Head from 'next/head';
 import styles from '../styles/Home.module.scss';
 import NovelCard from '../components/novel-card';
 import Header from '../components/header';
-import router from 'next/router';
 import {
   getFirestore,
   getDocs,
@@ -14,9 +13,16 @@ import {
 } from 'firebase/firestore';
 import { app } from '../lib/firebase';
 
+interface Novel {
+  id: string;
+  title: string;
+  image: string;
+}
+
 const Home: NextPage<{
-  novels: { id: string; title: string; image: string }[];
+  novels: Novel[];
 }> = ({ novels }) => {
+  console.log(novels);
   return (
     <div className={styles.container}>
       <Head>
@@ -44,11 +50,7 @@ export const getStaticProps: GetStaticProps = async () => {
     limit(10),
   );
   const querySnapshot = await getDocs(q);
-  const novels = querySnapshot.docs.map(doc => ({
-    id: doc.id,
-    title: doc.get('title'),
-    image: doc.get('image'),
-  }));
+  const novels = querySnapshot.docs.map(doc => doc.data());
   return {
     props: {
       novels,
