@@ -1,4 +1,4 @@
-import '../styles/globals.css';
+import '../styles/globals.scss';
 import 'react-tabs/style/react-tabs.scss';
 
 import type { AppProps } from 'next/app';
@@ -6,31 +6,35 @@ import { createContext } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { app, auth } from '../lib/firebase';
 import { doc, getFirestore } from 'firebase/firestore';
-import { AUTHORS } from '../lib/constants';
+import { Collection } from '../lib/constants';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import { User } from 'firebase/auth';
+import { ProfileInfo } from '../lib/types';
+import Header from '../components/header';
 
 interface Context {
   user: User | null | undefined;
-  profileInfo:
-    | {
-        id: string;
-        authorName: string;
-      }
-    | undefined;
+  profileInfo: ProfileInfo | undefined;
+  loading: boolean;
 }
 
-export const UserContext = createContext<Context | null>(null);
+export const UserContext = createContext<Context>({
+  user: undefined,
+  profileInfo: undefined,
+  loading: true,
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   const firestore = getFirestore(app);
-  const [user] = useAuthState(auth);
-  const docRef = user ? doc(firestore, AUTHORS, user.uid) : null;
-  const [data] = useDocumentDataOnce(docRef, {
+  const [user, userLoading] = useAuthState(auth);
+  const docRef = user ? doc(firestore, Collection.AUTHORS, user.uid) : null;
+  const [data, dataLoading] = useDocumentDataOnce(docRef, {
     idField: 'id',
   });
+  const loading = userLoading || dataLoading;
   return (
-    <UserContext.Provider value={{ user, profileInfo: data }}>
+    <UserContext.Provider value={{ user, profileInfo: data, loading }}>
+      <Header />
       <Component {...pageProps} />;
     </UserContext.Provider>
   );

@@ -1,21 +1,20 @@
-import styles from './styles/novelCard.module.scss';
-import Image from 'next/image';
+import styles from './styles/novel-card.module.scss';
 import Link from 'next/link';
 
 export default function NovelCard({
-  key,
+  id,
   title,
-  image,
+  imgUrl,
 }: {
-  key: string;
+  id: string;
   title: string;
-  image: string;
+  imgUrl: string;
 }) {
   return (
     <div className={styles.card}>
-      <Link href={`/${key}`}>
+      <Link href={`/${id}`}>
         <a>
-          <Image src={image} alt={title} />
+          <img src={imgUrl} alt={title} />
           <h3>{title}</h3>
         </a>
       </Link>

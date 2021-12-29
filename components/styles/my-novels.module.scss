@@ -1,0 +1,30 @@
+@import '../../styles/variables.module.scss';
+@import '../../styles/mixins.module.scss';
+.formAddChapter {
+  display: grid;
+  grid-template-columns: auto auto;
+  padding: $p3;
+  grid-gap: 8vw 2vw;
+  :nth-child(1) {
+    grid-column: 1 / span 2;
+    display: flex;
+    justify-content: flex-end;
+  }
+  :nth-last-child(1) {
+    grid-column: 1 / span 2;
+  }
+  button,
+  p,
+  label {
+    padding: $p1;
+  }
+  textarea {
+    margin-top: $p1;
+    height: 35vh;
+  }
+  button {
+    background-color: coral;
+    color: white;
+    font-weight: 900;
+  }
+}

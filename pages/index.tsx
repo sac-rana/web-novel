@@ -1,60 +1,53 @@
-import type { GetStaticProps, NextPage } from 'next';
+import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Head from 'next/head';
-import styles from '../styles/Home.module.scss';
+import styles from '../styles/home.module.scss';
 import NovelCard from '../components/novel-card';
-import Header from '../components/header';
-import {
-  getFirestore,
-  getDocs,
-  collection,
-  query,
-  limit,
-  orderBy,
-} from 'firebase/firestore';
-import { app } from '../lib/firebase';
+import { getDocs, collection, query, limit, orderBy } from 'firebase/firestore';
+import { firestore } from '../lib/firebase';
+import { Collection } from '../lib/constants';
+import { firebaseNovelConvertor } from '../lib/types';
 
 interface Novel {
   id: string;
   title: string;
-  image: string;
+  imgUrl: string;
 }
 
-const Home: NextPage<{
-  novels: Novel[];
-}> = ({ novels }) => {
-  console.log(novels);
+const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
+  novels,
+}) => {
   return (
     <div className={styles.container}>
       <Head>
         <title>PWA Novel App</title>
       </Head>
 
-      <Header />
-
       <main>
-        {novels.map(({ id, title, image }) => (
-          <NovelCard key={id} title={title} image={image} />
+        {novels.map(({ id, title, imgUrl }) => (
+          <NovelCard key={id} id={id} title={title} imgUrl={imgUrl} />
         ))}
       </main>
-
-      <footer className={styles.footer}></footer>
     </div>
   );
 };
 
-export const getStaticProps: GetStaticProps = async () => {
-  const firestore = getFirestore(app);
+export const getStaticProps: GetStaticProps<{ novels: Novel[] }> = async () => {
   const q = query(
-    collection(firestore, 'rooms'),
+    collection(firestore, Collection.NOVELS),
     orderBy('lastModified', 'desc'),
     limit(10),
-  );
+  ).withConverter(firebaseNovelConvertor);
   const querySnapshot = await getDocs(q);
-  const novels = querySnapshot.docs.map(doc => doc.data());
+  const novels = querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    title: doc.data()!.title,
+    imgUrl: doc.data()!.imgUrl,
+  }));
   return {
     props: {
-      novels,
+      novels: JSON.parse(JSON.stringify(novels)),
     },
+    revalidate: 60,
   };
 };
 

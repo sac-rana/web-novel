@@ -1,0 +1,38 @@
+@import '../../styles/variables.module.scss';
+@import '../../styles/mixins.module.scss';
+
+.container {
+  .back {
+    padding: $p1;
+    button {
+      background-color: coral;
+      color: white;
+      padding: $p1;
+    }
+  }
+  .nav {
+    display: flex;
+    justify-content: space-evenly;
+    padding: $p1;
+    button {
+      padding: $p1 $p3;
+      background-color: green;
+      color: white;
+    }
+  }
+  p {
+    text-align: center;
+    font-size: $f4;
+    font-weight: 400;
+  }
+  pre {
+    padding: $p1;
+    white-space: pre-wrap;
+  }
+}
+.nav {
+  button[disabled='disabled'],
+  button:disabled {
+    background-color: gray;
+  }
+}

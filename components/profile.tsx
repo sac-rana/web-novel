@@ -1,12 +1,11 @@
-interface ProfileInfo {
-  authorName: string;
-}
+import { useContext } from 'react';
+import { UserContext } from '../pages/_app';
 
-export default function Profile({ profileInfo }: { profileInfo: ProfileInfo }) {
-  console.log(profileInfo);
+export default function Profile() {
+  const { profileInfo } = useContext(UserContext);
   return (
     <div>
-      <h1>{profileInfo.authorName}</h1>
+      <h1>{profileInfo!.authorName}</h1>
     </div>
   );
 }

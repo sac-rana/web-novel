@@ -1,0 +1,61 @@
+@import 'variables.module';
+@import 'mixins.module';
+.form {
+  @include fullscreen;
+  @include centerG;
+  grid-template-rows: 20vh 80vh;
+  div {
+    @include centerG;
+    text-align: center;
+    color: rgb(136, 57, 28);
+    font-weight: bold;
+    font-size: $f4;
+  }
+  section {
+    position: relative;
+    padding: $p10 $p2;
+    display: grid;
+    label {
+      font-size: $f5;
+      text-align: center;
+      color: coral;
+      font-weight: bold;
+    }
+    input {
+      width: 55vw;
+      height: 5vh;
+    }
+    button {
+      background-color: coral;
+      color: white;
+      font-size: $f3;
+      padding: $p1;
+    }
+    label,
+    input,
+    button {
+      margin: $p6 0px;
+    }
+    ::before {
+      position: absolute;
+      content: '';
+      width: 20%;
+      height: 10%;
+      background-color: coral;
+      top: 0;
+      left: 0;
+      // clip-path: polygon(0 0, 0% 100%, 100% 0);
+      clip-path: polygon(0 0, 100% 0, 100% 15%, 15% 15%, 15% 100%, 0 100%);
+    }
+    ::after {
+      position: absolute;
+      content: '';
+      width: 20%;
+      height: 10%;
+      background-color: coral;
+      bottom: 0;
+      right: 0;
+      clip-path: polygon(85% 85%, 85% 0, 100% 0, 100% 100%, 0 100%, 0 85%);
+    }
+  }
+}

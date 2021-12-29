@@ -1,59 +1,58 @@
 import Header from '../components/header';
-import { FormEventHandler, useEffect, useState } from 'react';
+import { FormEventHandler, useContext, useState } from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Profile from '../components/profile';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import CreateNovel from '../components/create-novel';
-import { app, auth } from '../lib/firebase';
+import MyNovels from '../components/my-novels';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
-import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
-import { AUTHORS } from '../lib/constants';
+import { Collection } from '../lib/constants';
+import { UserContext } from './_app';
+import styles from '../styles/user.module.scss';
 
 export default function User() {
-  const [user, userLoading, userError] = useAuthState(auth);
-  const firestore = getFirestore(app);
-  const docRef = user ? doc(firestore, AUTHORS, user.uid) : null;
-  const [data, dataLoading, dataError] = useDocumentDataOnce(docRef, {
-    idField: 'id',
-  });
+  const { user, profileInfo, loading } = useContext(UserContext);
   const [authorName, setAuthorName] = useState('');
-  if (userLoading || dataLoading) return <h1>Loading...</h1>;
+  if (loading) return <h1>Loading...</h1>;
   if (!user) return <h1>401 Not Authenticated</h1>;
 
   const handleSubmit: FormEventHandler = async e => {
     e.preventDefault();
     const firestore = getFirestore();
-    await setDoc(doc(firestore, AUTHORS, user.uid), {
+    await setDoc(doc(firestore, Collection.AUTHORS, user.uid), {
       authorName,
     });
     document.location.reload();
   };
 
-  if (!data)
+  if (!profileInfo)
     return (
-      <form onSubmit={handleSubmit}>
-        <label htmlFor='authorName'>Author Name: </label>
-        <input
-          type='text'
-          name='authorName'
-          id='authorName'
-          value={authorName}
-          onChange={e => setAuthorName(e.target.value)}
-        />
-        <button type='submit'>Submit</button>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div>
+          Please create a Author Name which will be displayed with your novel.
+        </div>
+        <section>
+          <label htmlFor='authorName'>Author Name: </label>
+          <input
+            type='text'
+            name='authorName'
+            id='authorName'
+            value={authorName}
+            onChange={e => setAuthorName(e.target.value)}
+          />
+          <button type='submit'>Submit</button>
+        </section>
       </form>
     );
 
   return (
     <div>
-      <Header />
       <main>
         <Tabs>
           <TabList>
             <Tab>
               <p>My Novels</p>
             </Tab>
-            <Tab>
+            <Tab default={true}>
               <p>Create Novel</p>
             </Tab>
             <Tab>
@@ -61,13 +60,13 @@ export default function User() {
             </Tab>
           </TabList>
           <TabPanel>
-            <h1>Novels</h1>
+            <MyNovels />
           </TabPanel>
           <TabPanel>
             <CreateNovel />
           </TabPanel>
           <TabPanel>
-            <Profile profileInfo={data} />
+            <Profile />
           </TabPanel>
         </Tabs>
       </main>

@@ -1,25 +1,28 @@
-import { useState, useRef, FormEventHandler, useEffect } from 'react';
-import { uploadNovel } from '../lib/uploadNovel';
+import { useState, useRef, FormEventHandler, useContext } from 'react';
+import { uploadNovel } from '../lib/upload';
 import styles from './styles/create-novel.module.scss';
-import slugify from 'slugify';
+import { UserContext } from '../pages/_app';
 
 export default function CreateNovel() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const imgRef = useRef<HTMLInputElement>(null);
 
+  const { user, profileInfo } = useContext(UserContext);
+
   const handleSubmit: FormEventHandler = async e => {
     //TODO: Add data validation
     e.preventDefault();
     const imgFile = imgRef.current?.files?.item(0);
     if (!imgFile) return;
-    const slugifiedTitle = slugify(title);
-    if (slugifiedTitle.trim() === '') return;
-    await uploadNovel(slugifiedTitle, {
-      description,
+    await uploadNovel({
       title,
+      description,
       image: imgFile,
+      authorId: user!.uid,
+      authorName: profileInfo!.authorName,
     });
+    document.location.reload();
   };
 
   return (
@@ -50,7 +53,7 @@ export default function CreateNovel() {
                 <option value='Fantasy'>Fantasy</option>
               </select> */}
       <div className={styles.button}>
-        <button type='submit'>Create Novel</button>
+        <button>Create Novel</button>
       </div>
     </form>
   );
