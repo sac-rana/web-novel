@@ -8,6 +8,7 @@ import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { Collection } from '../lib/constants';
 import { UserContext } from './_app';
 import styles from '../styles/user.module.scss';
+import { firestore } from '../lib/firebase';
 
 export default function User() {
   const { user, profileInfo, loading } = useContext(UserContext);
@@ -17,7 +18,6 @@ export default function User() {
 
   const handleSubmit: FormEventHandler = async e => {
     e.preventDefault();
-    const firestore = getFirestore();
     await setDoc(doc(firestore, Collection.AUTHORS, user.uid), {
       authorName,
     });

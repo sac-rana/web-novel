@@ -9,12 +9,16 @@ import { doc, getFirestore } from 'firebase/firestore';
 import { Collection } from '../lib/constants';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import { User } from 'firebase/auth';
-import { ProfileInfo } from '../lib/types';
+import {
+  FirebaseAuthor,
+  firebaseAuthorConvertor,
+  ProfileInfo,
+} from '../lib/types';
 import Header from '../components/header';
 
 interface Context {
   user: User | null | undefined;
-  profileInfo: ProfileInfo | undefined;
+  profileInfo: ProfileInfo | FirebaseAuthor | undefined;
   loading: boolean;
 }
 
@@ -27,7 +31,11 @@ export const UserContext = createContext<Context>({
 function MyApp({ Component, pageProps }: AppProps) {
   const firestore = getFirestore(app);
   const [user, userLoading] = useAuthState(auth);
-  const docRef = user ? doc(firestore, Collection.AUTHORS, user.uid) : null;
+  const docRef = user
+    ? doc(firestore, Collection.AUTHORS, user.uid).withConverter(
+        firebaseAuthorConvertor,
+      )
+    : null;
   const [data, dataLoading] = useDocumentDataOnce(docRef, {
     idField: 'id',
   });

@@ -56,16 +56,31 @@ export const firebaseNovelConvertor = {
   },
 };
 
-export class Novel {
-  constructor(
-    public id: string,
-    public title: string,
-    public description: string,
-    public imgUrl: string,
-    public authorId: string,
-    public authorName: string,
-    public chapters: Chapter[],
-    public createdAt: { seconds: number; nanoseconds: number },
-    public lastModified: { seconds: number; nanoseconds: number },
-  ) {}
+export interface Novel {
+  id: string;
+  title: string;
+  description: string;
+  imgUrl: string;
+  authorId: string;
+  authorName: string;
+  chapters: Chapter[];
+  createdAt: { seconds: number; nanoseconds: number };
+  lastModified: { seconds: number; nanoseconds: number };
 }
+
+export class FirebaseAuthor {
+  constructor(public authorName: string) {}
+}
+
+export const firebaseAuthorConvertor = {
+  toFirestore: (profile: FirebaseAuthor) => {
+    return {
+      authorName: profile.authorName,
+    };
+  },
+  fromFirestore: (snapshot: DocumentSnapshot, options: SnapshotOptions) => {
+    const data = snapshot.data();
+    if (!data) return null;
+    return new FirebaseAuthor(data.authorName);
+  },
+};
