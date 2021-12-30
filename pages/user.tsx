@@ -1,4 +1,3 @@
-import Header from '../components/header';
 import { FormEventHandler, useContext, useState } from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Profile from '../components/profile';
