@@ -9,16 +9,12 @@ import { doc, getFirestore } from 'firebase/firestore';
 import { Collection } from '../lib/constants';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import { User } from 'firebase/auth';
-import {
-  FirebaseAuthor,
-  firebaseAuthorConvertor,
-  ProfileInfo,
-} from '../lib/types';
+import { firebaseAuthorConvertor } from '../lib/types';
 import Header from '../components/header';
 
 interface Context {
   user: User | null | undefined;
-  profileInfo: ProfileInfo | FirebaseAuthor | undefined;
+  profileInfo: any;
   loading: boolean;
 }
 
