@@ -3,7 +3,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Profile from '../components/profile';
 import CreateNovel from '../components/create-novel';
 import MyNovels from '../components/my-novels';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { Collection } from '../lib/constants';
 import { UserContext } from './_app';
 import styles from '../styles/user.module.scss';
