@@ -7,7 +7,7 @@ import {
 } from 'firebase/firestore';
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { firestore, storage } from './firebase';
-import { Collection } from './constants';
+import { Collection } from './utils';
 import slugify from 'slugify';
 import { randomBytes } from 'crypto';
 
@@ -39,12 +39,25 @@ export const uploadNovel = async (novel: Novel) => {
   const slugifiedTitle = slugify(novel.title, {
     lower: true,
   });
-  const url = await uploadImage(novel.image);
+  const formData = new FormData();
+  formData.append('imageFile', novel.image);
+  const res = await fetch('/api/uploadImage', {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) {
+    if (res.status === 500) {
+      const { error } = await res.json();
+      throw error;
+    }
+    return;
+  }
+  const { urlOfImage } = await res.json();
   const docRef = doc(firestore, Collection.NOVELS, slugifiedTitle);
   await setDoc(docRef, {
     title: novel.title,
     description: novel.description,
-    imgUrl: url,
+    imgUrl: urlOfImage,
     authorId: novel.authorId,
     authorName: novel.authorName,
     chapters: [],
@@ -54,9 +67,11 @@ export const uploadNovel = async (novel: Novel) => {
   await updateNovelList(slugifiedTitle);
 };
 
-const uploadImage = async (image: File) => {
+export const uploadImage = async (image: Buffer, mimeType?: string) => {
   const storageRef = ref(storage, randomBytes(16).toString('hex'));
-  const snapshot = await uploadBytes(storageRef, image);
+  const snapshot = await uploadBytes(storageRef, image, {
+    contentType: mimeType,
+  });
   const url = await getDownloadURL(snapshot.ref);
   return url;
 };
