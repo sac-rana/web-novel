@@ -6,7 +6,7 @@ import { createContext } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { app, auth } from '../lib/firebase';
 import { doc, getFirestore } from 'firebase/firestore';
-import { Collection } from '../lib/constants';
+import { Collection } from '../lib/utils';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import { User } from 'firebase/auth';
 import { firebaseAuthorConvertor } from '../lib/types';

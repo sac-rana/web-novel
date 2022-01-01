@@ -4,7 +4,7 @@ import Profile from '../components/profile';
 import CreateNovel from '../components/create-novel';
 import MyNovels from '../components/my-novels';
 import { doc, setDoc } from 'firebase/firestore';
-import { Collection } from '../lib/constants';
+import { Collection } from '../lib/utils';
 import { UserContext } from './_app';
 import styles from '../styles/user.module.scss';
 import { firestore } from '../lib/firebase';

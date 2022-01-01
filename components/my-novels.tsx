@@ -10,7 +10,7 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import { Collection } from '../lib/constants';
+import { Collection } from '../lib/utils';
 import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
 import Collapsible from 'react-collapsible';
 import styles from './styles/my-novels.module.scss';

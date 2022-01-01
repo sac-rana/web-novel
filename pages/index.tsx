@@ -4,7 +4,7 @@ import styles from '../styles/home.module.scss';
 import NovelCard from '../components/novel-card';
 import { getDocs, collection, query, limit, orderBy } from 'firebase/firestore';
 import { firestore } from '../lib/firebase';
-import { Collection } from '../lib/constants';
+import { Collection } from '../lib/utils';
 import { firebaseNovelConvertor } from '../lib/types';
 
 interface Novel {

@@ -2,7 +2,7 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { getDoc, doc } from 'firebase/firestore';
 import { firestore } from '../lib/firebase';
 import styles from '../styles/novel-page.module.scss';
-import { Collection } from '../lib/constants';
+import { Collection } from '../lib/utils';
 import { Novel, firebaseNovelConvertor } from '../lib/types';
 import ChapterComponent from '../components/chapter';
 import { useState } from 'react';
