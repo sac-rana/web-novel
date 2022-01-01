@@ -35,7 +35,13 @@ export default function CreateNovel() {
         value={title}
       />
       <label htmlFor='img'>Image</label>
-      <input type='file' name='img' id='img' accept='image/*' ref={imgRef} />
+      <input
+        type='file'
+        name='img'
+        id='img'
+        accept='.jpg, .jpeg, .png, .webp, .avif'
+        ref={imgRef}
+      />
       <label htmlFor='description'>Description:</label>
       <textarea
         onChange={e => setDescription(e.target.value)}
