@@ -39,7 +39,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <UserContext.Provider value={{ user, profileInfo: data, loading }}>
       <Header />
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
     </UserContext.Provider>
   );
 }
