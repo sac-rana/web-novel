@@ -5,6 +5,7 @@ import { Collection } from '../lib/utils';
 import { Novel, firebaseNovelConvertor } from '../lib/types';
 import ChapterComponent from '../components/chapter';
 import { useState } from 'react';
+import Image from 'next/image';
 
 export default function NovelPage({
   novel,
@@ -17,7 +18,7 @@ export default function NovelPage({
           <section>
             <div>{novel.title}</div>
             <div>
-              <img src={novel.imgUrl} alt={novel.title} />
+              <Image src={novel.imgUrl} alt={novel.title} layout='fill' />
             </div>
           </section>
           <section>

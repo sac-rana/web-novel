@@ -3,6 +3,7 @@ import { auth } from '../lib/firebase';
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { useContext } from 'react';
 import { UserContext } from '../pages/_app';
+import Image from 'next/image';
 
 export default function Header() {
   const { user } = useContext(UserContext);
@@ -17,7 +18,7 @@ export default function Header() {
         <div>
           <button onClick={() => signOut(auth)}>Logout</button>
           <button onClick={() => router.push('/user')}>
-            <img src={user.photoURL!} alt='User Profile' />
+            <Image src={user.photoURL!} alt='User Profile' layout='fill' />
           </button>
         </div>
       ) : (

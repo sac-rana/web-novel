@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function NovelCard({
   id,
@@ -13,7 +14,7 @@ export default function NovelCard({
     <div>
       <Link href={`/${id}`}>
         <a>
-          <img src={imgUrl} alt={title} />
+          <Image src={imgUrl} alt={title} layout='fill' />
           <h3>{title}</h3>
         </a>
       </Link>
