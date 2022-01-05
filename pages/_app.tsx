@@ -8,6 +8,7 @@ import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 import { User } from 'firebase/auth';
 import { firebaseAuthorConvertor } from '../lib/types';
 import Header from '../components/header';
+import '../styles/global.css';
 
 interface Context {
   user: User | null | undefined;
