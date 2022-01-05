@@ -1,6 +1,3 @@
-import '../styles/globals.scss';
-import 'react-tabs/style/react-tabs.scss';
-
 import type { AppProps } from 'next/app';
 import { createContext } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';

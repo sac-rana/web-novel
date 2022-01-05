@@ -1,6 +1,5 @@
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Head from 'next/head';
-import styles from '../styles/home.module.scss';
 import NovelCard from '../components/novel-card';
 import { getDocs, collection, query, limit, orderBy } from 'firebase/firestore';
 import { firestore } from '../lib/firebase';
@@ -17,7 +16,7 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   novels,
 }) => {
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>PWA Novel App</title>
       </Head>

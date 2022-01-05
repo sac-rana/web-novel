@@ -13,7 +13,6 @@ import {
 import { Collection } from '../lib/utils';
 import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
 import Collapsible from 'react-collapsible';
-import styles from './styles/my-novels.module.scss';
 
 export default function MyNovels() {
   const { profileInfo } = useContext(UserContext);
@@ -43,7 +42,7 @@ export default function MyNovels() {
   };
 
   return (
-    <div className={styles.novelList}>
+    <div>
       {novels.map(novel => (
         <Collapsible key={novel.id} trigger={novel.title}>
           {novel.chapters.map((chapter: any) => (
@@ -68,7 +67,7 @@ export default function MyNovels() {
         </Collapsible>
       ))}
       {showAddChapter ? (
-        <form className={styles.formAddChapter} onSubmit={addChapter}>
+        <form onSubmit={addChapter}>
           <p>
             <button onClick={() => setShowAddChapter(false)}>Close</button>
           </p>

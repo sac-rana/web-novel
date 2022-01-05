@@ -1,6 +1,5 @@
 import { useState, useRef, FormEventHandler, useContext } from 'react';
 import { uploadNovel } from '../lib/upload';
-import styles from './styles/create-novel.module.scss';
 import { UserContext } from '../pages/_app';
 
 export default function CreateNovel() {
@@ -26,7 +25,7 @@ export default function CreateNovel() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.container}>
+    <form onSubmit={handleSubmit}>
       <label htmlFor='title'>Name:</label>
       <input
         onChange={e => setTitle(e.target.value)}
@@ -58,7 +57,7 @@ export default function CreateNovel() {
                 <option value='Action'>Action</option>
                 <option value='Fantasy'>Fantasy</option>
               </select> */}
-      <div className={styles.button}>
+      <div>
         <button>Create Novel</button>
       </div>
     </form>

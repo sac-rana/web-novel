@@ -1,4 +1,3 @@
-import styles from './styles/novel-card.module.scss';
 import Link from 'next/link';
 
 export default function NovelCard({
@@ -11,7 +10,7 @@ export default function NovelCard({
   imgUrl: string;
 }) {
   return (
-    <div className={styles.card}>
+    <div>
       <Link href={`/${id}`}>
         <a>
           <img src={imgUrl} alt={title} />

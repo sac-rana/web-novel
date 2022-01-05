@@ -6,7 +6,6 @@ import MyNovels from '../components/my-novels';
 import { doc, setDoc } from 'firebase/firestore';
 import { Collection } from '../lib/utils';
 import { UserContext } from './_app';
-import styles from '../styles/user.module.scss';
 import { firestore } from '../lib/firebase';
 
 export default function User() {
@@ -25,7 +24,7 @@ export default function User() {
 
   if (!profileInfo)
     return (
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <form onSubmit={handleSubmit}>
         <div>
           Please create a Author Name which will be displayed with your novel.
         </div>

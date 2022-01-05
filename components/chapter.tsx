@@ -1,5 +1,4 @@
 import { Chapter } from '../lib/types';
-import styles from './styles/chapter.module.scss';
 export default function ChapterComponent({
   currentChapterIndex,
   chapter,
@@ -12,13 +11,13 @@ export default function ChapterComponent({
   setCurrentChapterIndex: Function;
 }) {
   return (
-    <div className={styles.container}>
-      <nav className={styles.back}>
+    <div>
+      <nav>
         <button onClick={() => setCurrentChapterIndex(undefined)}>
           <h3>Back to novel</h3>
         </button>
       </nav>
-      <nav className={styles.nav}>
+      <nav>
         <button
           disabled={currentChapterIndex == 0}
           onClick={() => setCurrentChapterIndex(currentChapterIndex - 1)}

@@ -1,7 +1,6 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { getDoc, doc } from 'firebase/firestore';
 import { firestore } from '../lib/firebase';
-import styles from '../styles/novel-page.module.scss';
 import { Collection } from '../lib/utils';
 import { Novel, firebaseNovelConvertor } from '../lib/types';
 import ChapterComponent from '../components/chapter';
@@ -12,16 +11,16 @@ export default function NovelPage({
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [currentChapterIndex, setCurrentChapterIndex] = useState<number>();
   return (
-    <div className={styles.container}>
+    <div>
       {currentChapterIndex === undefined && (
         <main>
           <section>
-            <div className={styles.novelTitle}>{novel.title}</div>
-            <div className={styles.novelImg}>
+            <div>{novel.title}</div>
+            <div>
               <img src={novel.imgUrl} alt={novel.title} />
             </div>
           </section>
-          <section className={styles.infoCard}>
+          <section>
             <div>
               <strong> Name: </strong>
               {novel.title}
@@ -38,7 +37,7 @@ export default function NovelPage({
               {novel.description}
             </pre>
           </section>
-          <section className={styles.chapterNav}>
+          <section>
             <div>Chapters</div>
             {novel.chapters.map((chapter, i) => (
               <p
@@ -59,7 +58,6 @@ export default function NovelPage({
           setCurrentChapterIndex={setCurrentChapterIndex}
         />
       )}
-      <footer className={styles.footer}></footer>
     </div>
   );
 }

@@ -1,4 +1,3 @@
-import styles from './styles/header.module.scss';
 import { useRouter } from 'next/router';
 import { auth } from '../lib/firebase';
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
@@ -12,12 +11,12 @@ export default function Header() {
     signInWithPopup(auth, new GoogleAuthProvider());
   };
   return (
-    <div className={styles.header}>
+    <div>
       <button onClick={() => router.push('/')}>Novel WebApp</button>
       {user ? (
-        <div className={styles.login_logout}>
+        <div>
           <button onClick={() => signOut(auth)}>Logout</button>
-          <button className={styles.user} onClick={() => router.push('/user')}>
+          <button onClick={() => router.push('/user')}>
             <img src={user.photoURL!} alt='User Profile' />
           </button>
         </div>
