@@ -7,6 +7,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { Collection } from '../lib/utils';
 import { UserContext } from './_app';
 import { firestore } from '../lib/firebase';
+import 'react-tabs/style/react-tabs.css';
 
 export default function User() {
   const { user, profileInfo, loading } = useContext(UserContext);

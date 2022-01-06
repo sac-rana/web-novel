@@ -20,8 +20,7 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
       <Head>
         <title>PWA Novel App</title>
       </Head>
-
-      <main>
+      <main className='grid grid-cols-2 gap-2 p-2'>
         {novels.map(({ id, title, imgUrl }) => (
           <NovelCard key={id} id={id} title={title} imgUrl={imgUrl} />
         ))}

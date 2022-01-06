@@ -49,6 +49,7 @@ export default function MyNovels() {
             <p key={chapter.chapterNo}>Chapter: {chapter.chapterNo}</p>
           ))}
           <button
+            className='mt-3 p-1 w-fit text-base bg-primary text-primary-text'
             onClick={() => {
               setNovelId(novel.id);
               setShowAddChapter(true);
@@ -67,27 +68,48 @@ export default function MyNovels() {
         </Collapsible>
       ))}
       {showAddChapter ? (
-        <form onSubmit={addChapter}>
-          <p>
-            <button onClick={() => setShowAddChapter(false)}>Close</button>
-          </p>
-          <p>Novel title:</p>
-          <p> {novelTitle}</p>
-          <label htmlFor='chapterNo'>Chapter no: </label>
-          <input
-            type='text'
-            name='chapterNo'
-            id='chapterNo'
-            value={chapterNo}
-            onChange={e => setChapterNo(e.target.value)}
-          />
-          <label htmlFor='chapterContent'>Chapter Content: </label>
-          <textarea
-            name='chapterContent'
-            id='chapterContent'
-            onChange={e => setChapterContent(e.target.value)}
-          ></textarea>
-          <button type='submit'>Add</button>
+        <form onSubmit={addChapter} className='my-4 mx-2'>
+          <div className='mb-2 text-lg'>Novel title: {novelTitle}</div>
+          <div className='flex flex-col mb-4'>
+            <label className='mb-2 text-lg' htmlFor='chapterNo'>
+              Chapter no:
+            </label>
+            <input
+              className='p-1'
+              type='text'
+              name='chapterNo'
+              id='chapterNo'
+              value={chapterNo}
+              onChange={e => setChapterNo(e.target.value)}
+            />
+          </div>
+          <div className='flex flex-col mb-4'>
+            <label className='mb-2 text-lg' htmlFor='chapterContent'>
+              Chapter Content:
+            </label>
+            <textarea
+              className='p-1'
+              name='chapterContent'
+              id='chapterContent'
+              onChange={e => setChapterContent(e.target.value)}
+              rows={10}
+            ></textarea>
+          </div>
+          <div className='flex justify-around'>
+            <button
+              className='p-1 w-20 text-lg bg-primary text-primary-text'
+              type='reset'
+              onClick={() => setShowAddChapter(false)}
+            >
+              Close
+            </button>
+            <button
+              className='p-1 w-20 text-lg bg-primary text-primary-text'
+              type='submit'
+            >
+              Add
+            </button>
+          </div>
         </form>
       ) : null}
     </div>

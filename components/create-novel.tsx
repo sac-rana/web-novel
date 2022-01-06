@@ -25,29 +25,46 @@ export default function CreateNovel() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor='title'>Name:</label>
-      <input
-        onChange={e => setTitle(e.target.value)}
-        type='text'
-        id='title'
-        value={title}
-      />
-      <label htmlFor='img'>Image</label>
-      <input
-        type='file'
-        name='img'
-        id='img'
-        accept='.jpg, .jpeg, .png, .webp, .avif'
-        ref={imgRef}
-      />
-      <label htmlFor='description'>Description:</label>
-      <textarea
-        onChange={e => setDescription(e.target.value)}
-        name='des'
-        id='des'
-        value={description}
-      ></textarea>
+    <form onSubmit={handleSubmit} className='p-2'>
+      <div className='mb-4 flex flex-col'>
+        <label htmlFor='title' className='mb-2'>
+          Name
+        </label>
+        <input
+          className='mb-2'
+          onChange={e => setTitle(e.target.value)}
+          type='text'
+          name='title'
+          id='title'
+          value={title}
+        />
+      </div>
+      <div className='mb-4 flex flex-col'>
+        <label htmlFor='imgFile' className='mb-2'>
+          Image
+        </label>
+        <input
+          className='col-span-7'
+          type='file'
+          name='imgFile'
+          id='imgFile'
+          accept='.jpg, .jpeg, .png, .webp, .avif'
+          ref={imgRef}
+        />
+      </div>
+      <div className='mb-4 flex flex-col'>
+        <label htmlFor='description' className='mb-2'>
+          Description
+        </label>
+        <textarea
+          className='col-span-10'
+          onChange={e => setDescription(e.target.value)}
+          name='description'
+          id='description'
+          value={description}
+          rows={10}
+        ></textarea>
+      </div>
       {/*TODO: Add genres to novels */}
       {/* <label htmlFor='genres'>Genres:</label>
                 <select name='genres' id='genres' multiple>
@@ -57,8 +74,10 @@ export default function CreateNovel() {
                 <option value='Action'>Action</option>
                 <option value='Fantasy'>Fantasy</option>
               </select> */}
-      <div>
-        <button>Create Novel</button>
+      <div className='flex justify-center'>
+        <button className='w-full p-2 my-3 text-2xl bg-primary text-primary-text'>
+          Create Novel
+        </button>
       </div>
     </form>
   );

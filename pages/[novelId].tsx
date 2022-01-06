@@ -1,7 +1,7 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { getDoc, doc } from 'firebase/firestore';
 import { firestore } from '../lib/firebase';
-import { Collection } from '../lib/utils';
+import { Collection, ImageDimensions } from '../lib/utils';
 import { Novel, firebaseNovelConvertor } from '../lib/types';
 import ChapterComponent from '../components/chapter';
 import { useState } from 'react';
@@ -14,14 +14,20 @@ export default function NovelPage({
   return (
     <div>
       {currentChapterIndex === undefined && (
-        <main>
-          <section>
-            <div>{novel.title}</div>
+        <main className='grid grid-cols-6 justify-center gap-y-4 px-3 py-4'>
+          <section className='col-span-4 col-start-2'>
+            <h1 className='text-center text-2xl'>{novel.title}</h1>
             <div>
-              <Image src={novel.imgUrl} alt={novel.title} layout='fill' />
+              <Image
+                src={novel.imgUrl}
+                alt={novel.title}
+                layout='responsive'
+                width={ImageDimensions.WIDTH}
+                height={ImageDimensions.HEIGHT}
+              />
             </div>
           </section>
-          <section>
+          <section className='col-span-6'>
             <div>
               <strong> Name: </strong>
               {novel.title}
@@ -38,16 +44,20 @@ export default function NovelPage({
               {novel.description}
             </pre>
           </section>
-          <section>
+          <section className='col-span-6'>
             <div>Chapters</div>
-            {novel.chapters.map((chapter, i) => (
-              <p
-                key={chapter.chapterNo}
-                onClick={() => setCurrentChapterIndex(i)}
-              >
-                Chapter: {chapter.chapterNo}
-              </p>
-            ))}
+            {novel.chapters.length !== 0 ? (
+              novel.chapters.map((chapter, i) => (
+                <p
+                  key={chapter.chapterNo}
+                  onClick={() => setCurrentChapterIndex(i)}
+                >
+                  Chapter: {chapter.chapterNo}
+                </p>
+              ))
+            ) : (
+              <p>No chapter yet.</p>
+            )}
           </section>
         </main>
       )}
@@ -94,5 +104,6 @@ export const getStaticProps: GetStaticProps<{ novel: Novel }> = async ({
     props: {
       novel: JSON.parse(JSON.stringify(novel)),
     },
+    revalidate: 60,
   };
 };

@@ -1,8 +1,6 @@
-import styles from './styles/error.module.scss';
-
 export default function Error({ msg }: { msg: string }) {
   return (
-    <div className={styles.errorPanel}>
+    <div className=''>
       <p>{msg}</p>;
     </div>
   );
