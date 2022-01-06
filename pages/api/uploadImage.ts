@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { processImage, parseImage } from '../../lib/image';
+import { processImage, parseImage } from '../../lib/utils';
 import { uploadImage } from '../../lib/upload';
 
 export const config = {
