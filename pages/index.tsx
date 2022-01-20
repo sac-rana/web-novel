@@ -1,16 +1,7 @@
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Head from 'next/head';
 import NovelCard from '../components/novel-card';
-import { getDocs, collection, query, limit, orderBy } from 'firebase/firestore';
-import { firestore } from '../lib/firebase';
-import { Collection } from '../lib/utils';
-import { firebaseNovelConvertor } from '../lib/types';
-
-interface Novel {
-  id: string;
-  title: string;
-  imgUrl: string;
-}
+import { prisma } from '../lib/backend-utils';
 
 const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   novels,
@@ -21,29 +12,37 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
         <title>PWA Novel App</title>
       </Head>
       <main className='grid grid-cols-2 gap-2 p-2'>
-        {novels.map(({ id, title, imgUrl }) => (
-          <NovelCard key={id} id={id} title={title} imgUrl={imgUrl} />
+        {novels.map(({ id, title, titleSlug, imgUrl }) => (
+          <NovelCard
+            key={id}
+            title={title}
+            titleSlug={titleSlug}
+            imgUrl={imgUrl}
+          />
         ))}
       </main>
     </div>
   );
 };
 
-export const getStaticProps: GetStaticProps<{ novels: Novel[] }> = async () => {
-  const q = query(
-    collection(firestore, Collection.NOVELS),
-    orderBy('lastModified', 'desc'),
-    limit(10),
-  ).withConverter(firebaseNovelConvertor);
-  const querySnapshot = await getDocs(q);
-  const novels = querySnapshot.docs.map(doc => ({
-    id: doc.id,
-    title: doc.data()!.title,
-    imgUrl: doc.data()!.imgUrl,
-  }));
+export const getStaticProps: GetStaticProps<{
+  novels: { id: string; title: string; titleSlug: string; imgUrl: string }[];
+}> = async () => {
+  const novels = await prisma.novel.findMany({
+    select: {
+      id: true,
+      title: true,
+      titleSlug: true,
+      imgUrl: true,
+    },
+    orderBy: {
+      updatedAt: 'desc',
+    },
+    take: 10,
+  });
   return {
     props: {
-      novels: JSON.parse(JSON.stringify(novels)),
+      novels,
     },
     revalidate: 60,
   };

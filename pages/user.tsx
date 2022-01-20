@@ -1,74 +1,111 @@
-import { FormEventHandler, useContext, useState } from 'react';
+import { createContext, FormEventHandler, useContext, useState } from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import Profile from '../components/profile';
-import CreateNovel from '../components/create-novel';
-import MyNovels from '../components/my-novels';
-import { doc, setDoc } from 'firebase/firestore';
-import { Collection } from '../lib/utils';
+import ProfileTab from '../components/profile';
+import CreateNovelTab from '../components/create-novel';
+import MyNovelsTab from '../components/my-novels';
 import { UserContext } from './_app';
-import { firestore } from '../lib/firebase';
 import 'react-tabs/style/react-tabs.css';
+import useProfile from '../lib/useProfile';
+import { Profile } from '@prisma/client';
+import { HashLoader } from 'react-spinners';
+import { profileSchema } from '../lib/validation';
+
+interface Context {
+  profile: Profile & { novels: { id: string; title: string }[] };
+  loading: boolean;
+}
+
+export const ProfileContext = createContext<Context>({} as Context);
 
 export default function User() {
-  const { user, profileInfo, loading } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [authorName, setAuthorName] = useState('');
-  if (loading) return <h1>Loading...</h1>;
+  const [profile, profileLoading] = useProfile(user);
   if (!user) return <h1>401 Not Authenticated</h1>;
 
   const handleSubmit: FormEventHandler = async e => {
     e.preventDefault();
-    await setDoc(doc(firestore, Collection.AUTHORS, user.uid), {
-      authorName,
+    const idToken = await user.getIdToken();
+    const { value, error } = profileSchema.validate(authorName);
+    if (error) throw error;
+    const res = await fetch('/api/profile', {
+      method: 'POST',
+      headers: {
+        authorization: 'Bearer ' + idToken,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        authorName: value,
+      }),
     });
+    if (!res.ok) throw new Error('Profile not created');
     document.location.reload();
   };
 
-  if (!profileInfo)
+  if (profileLoading) {
     return (
-      <form onSubmit={handleSubmit}>
+      <div className='flex justify-center items-center h-full'>
+        <HashLoader color='teal' size={70} />
+      </div>
+    );
+  }
+
+  if (!profile)
+    return (
+      <form onSubmit={handleSubmit} className='p-2'>
         <div>
           Please create a Author Name which will be displayed with your novel.
         </div>
         <section>
-          <label htmlFor='authorName'>Author Name: </label>
-          <input
-            type='text'
-            name='authorName'
-            id='authorName'
-            value={authorName}
-            onChange={e => setAuthorName(e.target.value)}
-          />
-          <button type='submit'>Submit</button>
+          <div className='mb-4 flex flex-col'>
+            <label htmlFor='authorName' className='mb-2'>
+              Author Name
+            </label>
+            <input
+              type='text'
+              name='authorName'
+              id='authorName'
+              value={authorName}
+              onChange={e => setAuthorName(e.target.value)}
+            />
+          </div>
+          <div className='flex justify-center'>
+            <button className='w-full p-2 my-3 text-2xl bg-primary text-primary-text'>
+              Submit
+            </button>
+          </div>
         </section>
       </form>
     );
 
   return (
-    <div>
-      <main>
-        <Tabs>
-          <TabList>
-            <Tab>
-              <p>My Novels</p>
-            </Tab>
-            <Tab default={true}>
-              <p>Create Novel</p>
-            </Tab>
-            <Tab>
-              <p>Profile</p>
-            </Tab>
-          </TabList>
-          <TabPanel>
-            <MyNovels />
-          </TabPanel>
-          <TabPanel>
-            <CreateNovel />
-          </TabPanel>
-          <TabPanel>
-            <Profile />
-          </TabPanel>
-        </Tabs>
-      </main>
-    </div>
+    <ProfileContext.Provider value={{ profile, loading: profileLoading }}>
+      <div>
+        <main>
+          <Tabs>
+            <TabList>
+              <Tab>
+                <p>My Novels</p>
+              </Tab>
+              <Tab default={true}>
+                <p>Create Novel</p>
+              </Tab>
+              <Tab>
+                <p>Profile</p>
+              </Tab>
+            </TabList>
+            <TabPanel>
+              <MyNovelsTab />
+            </TabPanel>
+            <TabPanel>
+              <CreateNovelTab />
+            </TabPanel>
+            <TabPanel>
+              <ProfileTab />
+            </TabPanel>
+          </Tabs>
+        </main>
+      </div>
+    </ProfileContext.Provider>
   );
 }

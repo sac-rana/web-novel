@@ -8,3 +8,25 @@ export const ImageDimensions = {
   WIDTH: 300,
   HEIGHT: 380,
 } as const;
+
+import { User } from 'firebase/auth';
+interface Novel {
+  title: string;
+  description: string;
+  imgFile: File;
+}
+export const uploadNovel = async (user: User, novel: Novel) => {
+  //TODO: verify data given by user
+  const idToken = await user.getIdToken();
+  const formData = new FormData();
+  formData.append('imgFile', novel.imgFile);
+  formData.append('title', novel.title);
+  formData.append('description', novel.description);
+  const res = await fetch('/api/novel', {
+    method: 'POST',
+    headers: {
+      authorization: 'Bearer ' + idToken,
+    },
+    body: formData,
+  });
+};

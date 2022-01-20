@@ -1,5 +1,7 @@
 import { useState, useRef, FormEventHandler, useContext } from 'react';
-import { uploadNovel } from '../lib/upload';
+import { HashLoader } from 'react-spinners';
+import { uploadNovel } from '../lib/utils';
+import { novelSchema } from '../lib/validation';
 import { UserContext } from '../pages/_app';
 
 export default function CreateNovel() {
@@ -7,23 +9,36 @@ export default function CreateNovel() {
   const [description, setDescription] = useState('');
   const imgRef = useRef<HTMLInputElement>(null);
 
-  const { user, profileInfo } = useContext(UserContext);
+  const { user } = useContext(UserContext);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleSubmit: FormEventHandler = async e => {
     //TODO: Add data validation
     e.preventDefault();
     const imgFile = imgRef.current?.files?.item(0);
     if (!imgFile) return;
-    await uploadNovel({
+    const { value, error } = novelSchema.validate({
       title,
       description,
-      image: imgFile,
-      authorId: user!.uid,
-      authorName: profileInfo!.authorName,
+      imgFile,
+    });
+    if (error) throw error;
+    setIsUploading(true);
+    await uploadNovel(user!, {
+      title: value.title,
+      description: value.description,
+      imgFile: value.imgFile,
     });
     document.location.reload();
   };
 
+  if (isUploading) {
+    return (
+      <div className='flex justify-center items-center my-auto'>
+        <HashLoader />
+      </div>
+    );
+  }
   return (
     <form onSubmit={handleSubmit} className='p-2'>
       <div className='mb-4 flex flex-col'>

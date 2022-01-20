@@ -1,44 +1,26 @@
 import type { AppProps } from 'next/app';
 import { createContext } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { app, auth } from '../lib/firebase';
-import { doc, getFirestore } from 'firebase/firestore';
-import { Collection } from '../lib/utils';
-import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
+import { auth } from '../lib/firebase';
 import { User } from 'firebase/auth';
-import { firebaseAuthorConvertor } from '../lib/types';
 import Header from '../components/header';
 import '../styles/global.css';
 
 interface Context {
   user: User | null | undefined;
-  profileInfo: any;
   loading: boolean;
 }
 
-export const UserContext = createContext<Context>({
-  user: undefined,
-  profileInfo: undefined,
-  loading: true,
-});
+export const UserContext = createContext<Context>({} as Context);
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const firestore = getFirestore(app);
-  const [user, userLoading] = useAuthState(auth);
-  const docRef = user
-    ? doc(firestore, Collection.AUTHORS, user.uid).withConverter(
-        firebaseAuthorConvertor,
-      )
-    : null;
-  const [data, dataLoading] = useDocumentDataOnce(docRef, {
-    idField: 'id',
-  });
-  const loading = userLoading || dataLoading;
+  const [user, loading] = useAuthState(auth);
   return (
-    <UserContext.Provider value={{ user, profileInfo: data, loading }}>
+    <UserContext.Provider value={{ user, loading }}>
       <Header />
       <Component {...pageProps} />
     </UserContext.Provider>
   );
 }
+
 export default MyApp;

@@ -3,17 +3,17 @@ import Image from 'next/image';
 import { ImageDimensions } from '../lib/utils';
 
 export default function NovelCard({
-  id,
   title,
+  titleSlug,
   imgUrl,
 }: {
-  id: string;
   title: string;
+  titleSlug: string;
   imgUrl: string;
 }) {
   return (
     <div>
-      <Link href={`/${id}`}>
+      <Link href={`/${titleSlug}`}>
         <a className='block'>
           <Image
             src={imgUrl}

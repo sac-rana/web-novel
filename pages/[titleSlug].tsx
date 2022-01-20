@@ -1,11 +1,10 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
-import { getDoc, doc } from 'firebase/firestore';
-import { firestore } from '../lib/firebase';
-import { Collection, ImageDimensions } from '../lib/utils';
-import { Novel, firebaseNovelConvertor } from '../lib/types';
+import { ImageDimensions } from '../lib/utils';
 import ChapterComponent from '../components/chapter';
 import { useState } from 'react';
 import Image from 'next/image';
+import { prisma } from '../lib/backend-utils';
+// TODO: fix this page
 
 export default function NovelPage({
   novel,
@@ -74,32 +73,36 @@ export default function NovelPage({
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const docRef = doc(firestore, Collection.EXTRAS, 'novel');
-  const novelIds: string[] = (await getDoc(docRef)).data()!.novelIds;
-  const paths = novelIds.map(novelId => ({
-    params: { novelId },
+  const novels = await prisma.novel.findMany({
+    select: {
+      titleSlug: true,
+    },
+  });
+  const paths = novels.map(novel => ({
+    params: { titleSlug: novel.titleSlug },
   }));
   return { paths, fallback: false };
 };
 
-export const getStaticProps: GetStaticProps<{ novel: Novel }> = async ({
-  params,
-}) => {
-  const id = params!.novelId as string;
-  const docRef = doc(firestore, Collection.NOVELS, id).withConverter(
-    firebaseNovelConvertor,
-  );
-  const docSnapshot = await getDoc(docRef);
-  const data = docSnapshot.data();
-  if (!data) {
-    return {
-      notFound: true,
-    };
-  }
-  const novel = {
-    id: docSnapshot.id,
-    ...data,
-  };
+interface Novel {
+  id: string;
+  title: string;
+  titleSlug: string;
+  description: string;
+  imgUrl: string;
+  authorId: string;
+}
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const titleSlug = params!.titleSlug as string;
+  // const novel = await prisma.novel.findUnique({
+  //   where: {
+  //     titleSlug,
+  //   },
+  // });
+  const novel =
+    await prisma.$queryRaw`select (id, title, title_slug, description, img_url, author_id)`;
+  if (!novel) throw new Error(`Novel with ID ${titleSlug} does not exist!`);
   return {
     props: {
       novel: JSON.parse(JSON.stringify(novel)),
