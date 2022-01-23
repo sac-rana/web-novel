@@ -47,6 +47,7 @@ export default async function handler(
           titleSlug: slugifiedTitle,
           description: novel.description,
           imgUrl: novel.imgUrl,
+          chapters: [],
           authorId: decodedIdToken.uid,
         },
       });
