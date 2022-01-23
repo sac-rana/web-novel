@@ -7,6 +7,8 @@ import { PrismaClient } from '@prisma/client';
 import { randomBytes } from 'crypto';
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { storage } from './firebase';
+import { assert } from 'joi';
+import { novelSchema } from './utils';
 
 export const processImage = (imgFileStream: Readable) => {
   const tranform = sharp()
@@ -17,7 +19,7 @@ export const processImage = (imgFileStream: Readable) => {
   return imgFileStream.pipe(tranform).toBuffer();
 };
 
-export const parseRequest = (req: NextApiRequest): Promise<any> => {
+export const parseRequest = (req: NextApiRequest) => {
   return new Promise<{ title: string; description: string; imgUrl: string }>(
     (resolve, reject) => {
       const novel: { [keys: string]: string } = {};
@@ -27,11 +29,13 @@ export const parseRequest = (req: NextApiRequest): Promise<any> => {
           files: 1,
         },
       });
-      let finished = false;
       bb.on('file', async (_, file) => {
         const img = await processImage(file);
-        const url = await uploadImage(img);
-        novel.url = url;
+        assert(
+          { title: novel.title, description: novel.description },
+          novelSchema,
+        );
+        novel.imgUrl = await uploadImage(img);
         resolve(novel as any);
       });
       bb.on('field', (fieldname, value) => {
@@ -39,9 +43,6 @@ export const parseRequest = (req: NextApiRequest): Promise<any> => {
       });
       bb.on('error', err => {
         reject(err);
-      });
-      bb.on('finish', () => {
-        finished = true;
       });
       req.pipe(bb);
     },
@@ -69,7 +70,7 @@ declare global {
   var admin: App | undefined;
 }
 
-import { initializeApp, cert, getApps, App } from 'firebase-admin/app';
+import { initializeApp, cert, App } from 'firebase-admin/app';
 export const admin =
   global.admin ||
   initializeApp({

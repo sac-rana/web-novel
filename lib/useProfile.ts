@@ -25,8 +25,12 @@ export default function useProfile(
         },
       });
       if (!res.ok) throw new Error('Error getting profile data');
+      if (res.status === 204) {
+        setLoading(false);
+        return;
+      }
       const data = await res.json();
-      if (data.profileExist) setProfile(data.profile);
+      setProfile(data);
       setLoading(false);
     };
     fetchData();

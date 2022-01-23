@@ -9,14 +9,17 @@ import '../styles/global.css';
 interface Context {
   user: User | null | undefined;
   loading: boolean;
+  error: Error | undefined;
 }
 
+// UserContext to maintain global user logged in state
 export const UserContext = createContext<Context>({} as Context);
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [user, loading] = useAuthState(auth);
+  // checking whether user is logged in or not
+  const [user, loading, error] = useAuthState(auth);
   return (
-    <UserContext.Provider value={{ user, loading }}>
+    <UserContext.Provider value={{ user, loading, error }}>
       <Header />
       <Component {...pageProps} />
     </UserContext.Provider>
