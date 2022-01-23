@@ -29,4 +29,21 @@ export const uploadNovel = async (user: User, novel: Novel) => {
     },
     body: formData,
   });
+  if (!res.ok) throw new Error(res.statusText);
 };
+
+import joi from 'joi';
+
+export const novelSchema = joi.object({
+  title: joi
+    .string()
+    .pattern(/^[\w\- ]+$/)
+    .min(3)
+    .max(100)
+    .required(),
+  description: joi.string(),
+});
+
+export const profileSchema = joi.string().alphanum().min(3).max(30).required();
+
+export const chapterContentSchema = joi.string().min(50).required();
