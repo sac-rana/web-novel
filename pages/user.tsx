@@ -42,32 +42,30 @@ export default function UserPage() {
 
   return (
     <ProfileContext.Provider value={{ profile, loading: profileLoading }}>
-      <div>
-        <main>
-          <Tabs>
-            <TabList>
-              <Tab>
-                <p>My Novels</p>
-              </Tab>
-              <Tab default={true}>
-                <p>Create Novel</p>
-              </Tab>
-              <Tab>
-                <p>Profile</p>
-              </Tab>
-            </TabList>
-            <TabPanel>
-              <MyNovelsTab />
-            </TabPanel>
-            <TabPanel>
-              <CreateNovelTab />
-            </TabPanel>
-            <TabPanel>
-              <ProfileTab />
-            </TabPanel>
-          </Tabs>
-        </main>
-      </div>
+      <main>
+        <Tabs>
+          <TabList>
+            <Tab>
+              <p>My Novels</p>
+            </Tab>
+            <Tab default={true}>
+              <p>Create Novel</p>
+            </Tab>
+            <Tab>
+              <p>Profile</p>
+            </Tab>
+          </TabList>
+          <TabPanel>
+            <MyNovelsTab />
+          </TabPanel>
+          <TabPanel>
+            <CreateNovelTab />
+          </TabPanel>
+          <TabPanel>
+            <ProfileTab />
+          </TabPanel>
+        </Tabs>
+      </main>
     </ProfileContext.Provider>
   );
 }
