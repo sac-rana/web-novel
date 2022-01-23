@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { ProfileContext } from '../pages/user';
+import { ProfileContext } from '../../pages/user';
 
 export default function Profile() {
   const { profile } = useContext(ProfileContext);

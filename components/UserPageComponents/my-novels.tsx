@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import Collapsible from 'react-collapsible';
-import { ProfileContext } from '../pages/user';
-import AddChapter from './add-chapter';
+import { ProfileContext } from '../../pages/user';
+import AddChapter from '../add-chapter';
 
 export default function MyNovels() {
   const {

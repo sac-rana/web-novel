@@ -1,8 +1,9 @@
 import { useState, useRef, FormEventHandler, useContext } from 'react';
 import { HashLoader } from 'react-spinners';
-import { uploadNovel } from '../lib/utils';
-import { novelSchema } from '../lib/validation';
-import { UserContext } from '../pages/_app';
+import { uploadNovel } from '../../lib/utils';
+import { novelSchema } from '../../lib/utils';
+import { UserContext } from '../../pages/_app';
+import { assert } from 'joi';
 
 export default function CreateNovel() {
   const [title, setTitle] = useState('');
@@ -17,17 +18,12 @@ export default function CreateNovel() {
     e.preventDefault();
     const imgFile = imgRef.current?.files?.item(0);
     if (!imgFile) return;
-    const { value, error } = novelSchema.validate({
+    assert({ title, description }, novelSchema);
+    setIsUploading(true);
+    await uploadNovel(user!, {
       title,
       description,
       imgFile,
-    });
-    if (error) throw error;
-    setIsUploading(true);
-    await uploadNovel(user!, {
-      title: value.title,
-      description: value.description,
-      imgFile: value.imgFile,
     });
     document.location.reload();
   };
