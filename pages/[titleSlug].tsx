@@ -1,74 +1,56 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { ImageDimensions } from '../lib/utils';
-import ChapterComponent from '../components/chapter';
-import { useState } from 'react';
 import Image from 'next/image';
 import { prisma } from '../lib/backend-utils';
-// TODO: fix this page
 
 export default function NovelPage({
   novel,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const [currentChapterIndex, setCurrentChapterIndex] = useState<number>();
+  const { title, description, img_url, author_name, no_of_chapters } = novel;
   return (
-    <div>
-      {currentChapterIndex === undefined && (
-        <main className='grid grid-cols-6 justify-center gap-y-4 px-3 py-4'>
-          <section className='col-span-4 col-start-2'>
-            <h1 className='text-center text-2xl'>{novel.title}</h1>
-            <div>
-              <Image
-                src={novel.imgUrl}
-                alt={novel.title}
-                layout='responsive'
-                width={ImageDimensions.WIDTH}
-                height={ImageDimensions.HEIGHT}
-              />
-            </div>
-          </section>
-          <section className='col-span-6'>
-            <div>
-              <strong> Name: </strong>
-              {novel.title}
-            </div>
-            <div>
-              <strong>Rating:</strong> 5
-            </div>
-            <div>
-              <strong>Author: </strong>
-              {novel.authorName}
-            </div>
-            <pre>
-              <strong>Description: </strong>
-              {novel.description}
-            </pre>
-          </section>
-          <section className='col-span-6'>
-            <div>Chapters</div>
-            {novel.chapters.length !== 0 ? (
-              novel.chapters.map((chapter, i) => (
-                <p
-                  key={chapter.chapterNo}
-                  onClick={() => setCurrentChapterIndex(i)}
-                >
-                  Chapter: {chapter.chapterNo}
-                </p>
-              ))
-            ) : (
-              <p>No chapter yet.</p>
-            )}
-          </section>
-        </main>
-      )}
-      {currentChapterIndex !== undefined && (
-        <ChapterComponent
-          currentChapterIndex={currentChapterIndex}
-          chapter={novel.chapters[currentChapterIndex]}
-          maxChapters={novel.chapters.length}
-          setCurrentChapterIndex={setCurrentChapterIndex}
-        />
-      )}
-    </div>
+    <main className='grid grid-cols-6 justify-center gap-y-4 px-3 py-4'>
+      <section className='col-span-4 col-start-2'>
+        <h1 className='text-center text-2xl'>{title}</h1>
+        <div>
+          <Image
+            src={img_url}
+            alt={title}
+            layout='responsive'
+            width={ImageDimensions.WIDTH}
+            height={ImageDimensions.HEIGHT}
+          />
+        </div>
+      </section>
+      <section className='col-span-6'>
+        <div>
+          <strong> Name: </strong>
+          {title}
+        </div>
+        <div>
+          <strong>Rating:</strong> 5
+        </div>
+        <div>
+          <strong>Author: </strong>
+          {author_name}
+        </div>
+        <pre>
+          <strong>Description: </strong>
+          {description}
+        </pre>
+      </section>
+      <section className='col-span-6'>
+        <div>Chapters</div>
+        <ul>
+          {no_of_chapters === 0 ? (
+            <p>No chapters</p>
+          ) : (
+            new Array(no_of_chapters).map((_, i) => (
+              <li key={i}>Chapter {i}</li>
+            ))
+          )}
+        </ul>
+      </section>
+    </main>
   );
 }
 
@@ -85,27 +67,23 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 interface Novel {
-  id: string;
   title: string;
-  titleSlug: string;
   description: string;
-  imgUrl: string;
-  authorId: string;
+  img_url: string;
+  no_of_chapters: number;
+  author_name: string;
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps<{ novel: Novel }> = async ({
+  params,
+}) => {
   const titleSlug = params!.titleSlug as string;
-  // const novel = await prisma.novel.findUnique({
-  //   where: {
-  //     titleSlug,
-  //   },
-  // });
-  const novel =
-    await prisma.$queryRaw`select (id, title, title_slug, description, img_url, author_id)`;
+  const [novel]: Novel[] =
+    await prisma.$queryRaw`SELECT novels.title, novels.img_url, novels.description, cardinality(novels.chapters) AS no_of_chapters, profiles.name AS author_name from novels JOIN profiles ON novels.author_id=profiles.uid  where novels.title_slug=${titleSlug}`;
   if (!novel) throw new Error(`Novel with ID ${titleSlug} does not exist!`);
   return {
     props: {
-      novel: JSON.parse(JSON.stringify(novel)),
+      novel,
     },
     revalidate: 60,
   };
