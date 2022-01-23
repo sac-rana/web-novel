@@ -37,7 +37,7 @@ import joi from 'joi';
 export const novelSchema = joi.object({
   title: joi
     .string()
-    .pattern(/^[\w\- ]+$/)
+    .pattern(/^[\w\-, ]+$/)
     .min(3)
     .max(100)
     .required(),
