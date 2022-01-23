@@ -3,7 +3,6 @@ import slugify from 'slugify';
 import { parseRequest } from '../../lib/backend-utils';
 import { getAuth } from 'firebase-admin/auth';
 import { prisma, admin } from '../../lib/backend-utils';
-import { novelDBSchema } from '../../lib/validation';
 
 export const config = {
   api: {
@@ -19,31 +18,43 @@ export default async function handler(
     !req.headers.authorization ||
     !req.headers.authorization.startsWith('Bearer ')
   ) {
+    console.log('No authorization headers');
     return res.status(401).send('Unauthorized');
   }
   const idToken = req.headers.authorization.split('Bearer ')[1];
-  return new Promise(async (resolve, _) => {
+  return new Promise<void>(async (resolve, _) => {
+    let decodedIdToken;
     try {
-      const decodedIdToken = await getAuth(admin).verifyIdToken(idToken);
-      const novel = await parseRequest(req);
-      const { value, error } = novelDBSchema.validate(novel);
-      const slugifiedTitle = slugify(value.title, {
-        lower: true,
-      });
-      if (error) return res.status(400).send(error.message);
-      // TODO: verify if author profile is created first
+      decodedIdToken = await getAuth(admin).verifyIdToken(idToken);
+    } catch (err) {
+      console.log(err);
+      return res.status(401).send(err);
+    }
+    let novel;
+    try {
+      novel = await parseRequest(req);
+    } catch (err) {
+      console.log(err);
+      return res.status(400).send(err);
+    }
+    const slugifiedTitle = slugify(novel.title, {
+      lower: true,
+    });
+    try {
       await prisma.novel.create({
         data: {
-          title: value.title,
+          title: novel.title,
           titleSlug: slugifiedTitle,
-          description: value.description,
-          imgUrl: value.imgUrl,
+          description: novel.description,
+          imgUrl: novel.imgUrl,
           authorId: decodedIdToken.uid,
         },
       });
-      res.status(200);
+      res.status(200).send('Novel created');
     } catch (err) {
+      console.log(err);
       res.status(500).send(err);
     }
+    resolve();
   });
 }
