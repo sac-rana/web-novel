@@ -1,20 +1,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ImageDimensions } from '../lib/utils';
+import { Novel } from '../lib/types';
 
-export default function NovelCard({
-  title,
-  titleSlug,
-  imgUrl,
-}: {
-  title: string;
-  titleSlug: string;
-  imgUrl: string;
-}) {
+export default function NovelCard({ novel }: { novel: Novel }) {
+  const { title, titleSlug, imgUrl } = novel;
   return (
-    <div>
-      <Link href={`/${titleSlug}`}>
-        <a className='block'>
+    <Link href={`/${titleSlug}`}>
+      <a>
+        <figure>
           <Image
             src={imgUrl}
             alt={title}
@@ -22,9 +16,11 @@ export default function NovelCard({
             width={ImageDimensions.WIDTH}
             height={ImageDimensions.HEIGHT}
           />
-          <h3 className='text-center'>{title}</h3>
-        </a>
-      </Link>
-    </div>
+          <figcaption>
+            <h3 className='text-center'>{title}</h3>
+          </figcaption>
+        </figure>
+      </a>
+    </Link>
   );
 }

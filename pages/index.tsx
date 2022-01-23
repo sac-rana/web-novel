@@ -2,6 +2,7 @@ import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
 import Head from 'next/head';
 import NovelCard from '../components/novel-card';
 import { prisma } from '../lib/backend-utils';
+import { Novel } from '../lib/types';
 
 const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   novels,
@@ -12,13 +13,8 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
         <title>PWA Novel App</title>
       </Head>
       <main className='grid grid-cols-2 gap-2 p-2'>
-        {novels.map(({ id, title, titleSlug, imgUrl }) => (
-          <NovelCard
-            key={id}
-            title={title}
-            titleSlug={titleSlug}
-            imgUrl={imgUrl}
-          />
+        {novels.map(novel => (
+          <NovelCard key={novel.titleSlug} novel={novel} />
         ))}
       </main>
     </div>
@@ -26,11 +22,10 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 };
 
 export const getStaticProps: GetStaticProps<{
-  novels: { id: string; title: string; titleSlug: string; imgUrl: string }[];
+  novels: Novel[];
 }> = async () => {
   const novels = await prisma.novel.findMany({
     select: {
-      id: true,
       title: true,
       titleSlug: true,
       imgUrl: true,
