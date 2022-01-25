@@ -1,13 +1,12 @@
 import { User } from 'firebase/auth';
 import { useEffect, useState } from 'react';
-
-type AuthorNovels = { id: string; title: string; no_of_chapter: number }[];
+import { MyProfile } from './types';
 
 export default function useProfile(
   user: User | null | undefined,
-): [AuthorNovels | null, boolean] {
+): [MyProfile | null, boolean] {
   const [loading, setLoading] = useState(true);
-  const [myNovels, setMyNovels] = useState<AuthorNovels | null>(null);
+  const [MyProfile, setMyNovels] = useState<MyProfile | null>(null);
   useEffect(() => {
     if (!user) {
       setLoading(false);
@@ -32,5 +31,5 @@ export default function useProfile(
     };
     fetchData();
   }, [user]);
-  return [myNovels, loading];
+  return [MyProfile, loading];
 }

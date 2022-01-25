@@ -17,7 +17,7 @@ export default function MyNovels() {
   return (
     <div>
       {novels.map(novel => (
-        <Collapsible key={novel.id} trigger={novel.title}>
+        <Collapsible key={novel.title_slug} trigger={novel.title}>
           <button
             className='mt-3 p-1 w-fit text-base bg-primary text-primary-text'
             onClick={() => {

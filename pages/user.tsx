@@ -7,11 +7,11 @@ import ProfileForm from '../components/UserPageComponents/profile-form';
 import { UserContext } from './_app';
 import 'react-tabs/style/react-tabs.css';
 import useProfile from '../lib/useProfile';
-import { Profile } from '@prisma/client';
 import { HashLoader } from 'react-spinners';
+import { MyProfile } from '../lib/types';
 
 interface Context {
-  profile: Profile & { novels: { id: string; title: string }[] };
+  profile: MyProfile;
   loading: boolean;
 }
 
