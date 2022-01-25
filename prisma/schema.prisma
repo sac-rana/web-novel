@@ -11,9 +11,8 @@ datasource db {
 }
 
 model Novel {
-  id          String   @id @default(uuid())
+  titleSlug   String   @id @map("title_slug")
   title       String
-  titleSlug   String   @unique @map("title_slug")
   description String
   imgUrl      String   @map("img_url")
   author      Profile  @relation(fields: [authorId], references: [uid])
