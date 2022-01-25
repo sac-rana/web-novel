@@ -3,10 +3,11 @@ import { getAuth } from 'firebase-admin/auth';
 import { prisma, admin } from '../../lib/backend-utils';
 import { profileSchema } from '../../lib/utils';
 import { assert } from 'joi';
+import { MyProfile } from '../../lib/types';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse<MyProfile | string>,
 ) {
   if (
     !req.headers.authorization ||
@@ -23,10 +24,23 @@ export default async function handler(
   }
   if (req.method === 'GET') {
     try {
-      const profile =
-        await prisma.$queryRaw`SELECT id, title, cardinality(chapters) AS no_of_chapters from novels where author_id=${decodedToken.uid}`;
-      if (!profile) return res.status(204).send('Profile does not exist');
-      return res.json(profile);
+      const profile = await prisma.profile.findUnique({
+        select: {
+          name: true,
+        },
+        where: {
+          uid: decodedToken.uid,
+        },
+      });
+      if (!profile)
+        return res.status(403).send('You have not created your profile');
+      const authorNovels =
+        (await prisma.$queryRaw`SELECT title_slug, title, cardinality(chapters) AS no_of_chapters, from novels where author_id=${decodedToken.uid}`) ||
+        [];
+      return res.json({
+        author_name: profile.name,
+        novels: authorNovels as any,
+      });
     } catch (err) {
       console.log(err);
       return res.status(500).send('Server error');
@@ -47,7 +61,7 @@ export default async function handler(
         email: decodedToken.email!,
       },
     });
-    res.status(201).send('Profile created');
+    return res.status(201).send('Profile created');
   } catch (err) {
     console.log(err);
     return res.status(500).send('Server error');
