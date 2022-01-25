@@ -35,7 +35,7 @@ export const parseRequest = (req: NextApiRequest) => {
           { title: novel.title, description: novel.description },
           novelSchema,
         );
-        novel.imgUrl = await uploadImage(img);
+        novel.imgUrl = await uploadImageToFirebase(img);
         resolve(novel as any);
       });
       bb.on('field', (fieldname, value) => {
@@ -49,7 +49,7 @@ export const parseRequest = (req: NextApiRequest) => {
   );
 };
 
-export const uploadImage = async (image: Buffer) => {
+export const uploadImageToFirebase = async (image: Buffer) => {
   const storageRef = ref(storage, randomBytes(16).toString('hex'));
   const snapshot = await uploadBytes(storageRef, image, {
     contentType: 'image/webp',

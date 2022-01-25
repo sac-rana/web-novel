@@ -23,19 +23,8 @@ export default async function handler(
   }
   if (req.method === 'GET') {
     try {
-      const profile = await prisma.profile.findUnique({
-        where: {
-          uid: decodedToken.uid,
-        },
-        include: {
-          novels: {
-            select: {
-              id: true,
-              title: true,
-            },
-          },
-        },
-      });
+      const profile =
+        await prisma.$queryRaw`SELECT id, title, cardinality(chapters) AS no_of_chapters from novels where author_id=${decodedToken.uid}`;
       if (!profile) return res.status(204).send('Profile does not exist');
       return res.json(profile);
     } catch (err) {
