@@ -1,16 +1,13 @@
-import { Profile } from '@prisma/client';
 import { User } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 
-type CustomProfile = Profile & {
-  novels: { id: string; title: string }[];
-};
+type AuthorNovels = { id: string; title: string; no_of_chapter: number }[];
 
 export default function useProfile(
   user: User | null | undefined,
-): [CustomProfile | null, boolean] {
+): [AuthorNovels | null, boolean] {
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<CustomProfile | null>(null);
+  const [myNovels, setMyNovels] = useState<AuthorNovels | null>(null);
   useEffect(() => {
     if (!user) {
       setLoading(false);
@@ -30,10 +27,10 @@ export default function useProfile(
         return;
       }
       const data = await res.json();
-      setProfile(data);
+      setMyNovels(data);
       setLoading(false);
     };
     fetchData();
   }, [user]);
-  return [profile, loading];
+  return [myNovels, loading];
 }
