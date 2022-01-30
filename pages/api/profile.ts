@@ -9,12 +9,15 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<MyProfile | string>,
 ) {
+  // check if authorization headers exist
   if (
     !req.headers.authorization ||
     !req.headers.authorization.startsWith('Bearer ')
   ) {
     return res.status(400).send('Bad request');
   }
+
+  // verify the user
   const idToken = req.headers.authorization.split('Bearer ')[1];
   let decodedToken;
   try {
@@ -22,6 +25,8 @@ export default async function handler(
   } catch (err) {
     return res.status(401).send('Unauthorized');
   }
+
+  // if user is asking to get profile info
   if (req.method === 'GET') {
     try {
       const profile = await prisma.profile.findUnique({
@@ -29,16 +34,19 @@ export default async function handler(
           name: true,
         },
         where: {
-          uid: decodedToken.uid,
+          id: decodedToken.uid,
         },
       });
+      // profile does not exist
       if (!profile)
         return res.status(403).send('You have not created your profile');
+
+      // send profile data
       const authorNovels =
-        (await prisma.$queryRaw`SELECT title_slug, title, cardinality(chapters) AS no_of_chapters, from novels where author_id=${decodedToken.uid}`) ||
+        (await prisma.$queryRaw`SELECT id, title, cardinality(chapters) AS "noOfChapters" from novels where author_id=${decodedToken.uid}`) ||
         [];
       return res.json({
-        author_name: profile.name,
+        authorName: profile.name,
         novels: authorNovels as any,
       });
     } catch (err) {
@@ -47,16 +55,18 @@ export default async function handler(
     }
   }
 
+  // if user is creating a profile
   const { authorName } = req.body;
   try {
-    assert(authorName, profileSchema);
+    assert(authorName, profileSchema); // checking if user sent valid name
   } catch (err) {
     return res.status(400).send((err as Error).message);
   }
+  // create profile
   try {
     await prisma.profile.create({
       data: {
-        uid: decodedToken.uid,
+        id: decodedToken.uid,
         name: authorName,
         email: decodedToken.email!,
       },

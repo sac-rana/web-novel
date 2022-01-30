@@ -20,11 +20,11 @@ export default function useProfile(
           authorization: 'Bearer ' + idToken,
         },
       });
-      if (!res.ok) throw new Error('Error getting profile data');
-      if (res.status === 204) {
+      if (res.status === 403) {
         setLoading(false);
         return;
       }
+      if (!res.ok) throw new Error('Error getting profile data');
       const data = await res.json();
       setMyNovels(data);
       setLoading(false);

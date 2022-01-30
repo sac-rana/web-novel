@@ -14,7 +14,7 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
       </Head>
       <main className='grid grid-cols-2 gap-2 p-2'>
         {novels.map(novel => (
-          <NovelCard key={novel.titleSlug} novel={novel} />
+          <NovelCard key={novel.id} novel={novel} />
         ))}
       </main>
     </div>
@@ -26,8 +26,8 @@ export const getStaticProps: GetStaticProps<{
 }> = async () => {
   const novels = await prisma.novel.findMany({
     select: {
+      id: true,
       title: true,
-      titleSlug: true,
       imgUrl: true,
     },
     orderBy: {

@@ -1,25 +1,30 @@
 import { FormEventHandler, useState } from 'react';
 import Router from 'next/router';
 
-export default function AddChapter({
-  novel: { titleSlug, title, chapterNo },
-}: {
-  novel: { titleSlug: string; title: string; chapterNo: number };
-}) {
+interface Novel {
+  id: string;
+  title: string;
+  chapterNo: number;
+}
+
+export default function AddChapter({ novel }: { novel: Novel }) {
+  const { id, title, chapterNo } = novel;
   const [chapterContent, setChapterContent] = useState('');
 
+  // send chapter to backend
   const addChapter: FormEventHandler = async e => {
     e.preventDefault();
-    await fetch('/api/add-chapter', {
+    const res = await fetch('/api/chapter', {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
       },
       body: JSON.stringify({
-        titleSlug,
+        id,
         chapterContent,
       }),
     });
+    if (!res.ok) throw new Error('Chapter not added ' + res.status);
     Router.reload();
   };
 

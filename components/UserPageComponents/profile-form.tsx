@@ -21,7 +21,6 @@ export default function Form({ user }: { user: User }) {
       }),
     });
     if (!res.ok) throw new Error('Profile not created: ' + res.statusText);
-    Router.reload();
   };
 
   return (

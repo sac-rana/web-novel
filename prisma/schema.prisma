@@ -11,11 +11,11 @@ datasource db {
 }
 
 model Novel {
-  titleSlug   String   @id @map("title_slug")
+  id          String   @id
   title       String
   description String
   imgUrl      String   @map("img_url")
-  author      Profile  @relation(fields: [authorId], references: [uid])
+  author      Profile  @relation(fields: [authorId], references: [id])
   authorId    String   @map("author_id")
   chapters    String[]
   createdAt   DateTime @default(now()) @map("created_at")
@@ -25,7 +25,7 @@ model Novel {
 }
 
 model Profile {
-  uid    String  @id
+  id     String  @id
   email  String  @unique
   name   String  @unique
   novels Novel[]

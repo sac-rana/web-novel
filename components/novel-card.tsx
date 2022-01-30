@@ -4,9 +4,9 @@ import { ImageDimensions } from '../lib/utils';
 import { Novel } from '../lib/types';
 
 export default function NovelCard({ novel }: { novel: Novel }) {
-  const { title, titleSlug, imgUrl } = novel;
+  const { id, title, imgUrl } = novel;
   return (
-    <Link href={`/${titleSlug}`}>
+    <Link href={`/${id}`}>
       <a>
         <figure>
           <Image

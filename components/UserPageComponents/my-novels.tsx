@@ -8,7 +8,7 @@ export default function MyNovels() {
     profile: { novels },
   } = useContext(ProfileContext);
   const [chapter, setChapter] = useState<{
-    titleSlug: string;
+    id: string;
     title: string;
     chapterNo: number;
   } | null>(null);
@@ -19,15 +19,15 @@ export default function MyNovels() {
   return (
     <div>
       {novels.map(novel => (
-        <Collapsible key={novel.title_slug} trigger={novel.title}>
-          <p>Total no of chapters: {novel.no_of_chapters}</p>
+        <Collapsible key={novel.id} trigger={novel.title}>
+          <p>Total no of chapters: {novel.noOfChapters}</p>
           <button
             className='mt-3 p-1 w-fit text-base bg-primary text-primary-text'
             onClick={() => {
               setChapter({
-                titleSlug: novel.title_slug,
+                id: novel.id,
                 title: novel.title,
-                chapterNo: novel.no_of_chapters + 1,
+                chapterNo: novel.noOfChapters + 1,
               });
             }}
           >

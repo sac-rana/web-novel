@@ -33,7 +33,6 @@ export const uploadNovel = async (user: User, novel: Novel) => {
 };
 
 import joi from 'joi';
-
 export const novelSchema = joi.object({
   title: joi
     .string()
