@@ -4,7 +4,7 @@ import { uploadNovel } from '../../lib/utils';
 import { novelSchema } from '../../lib/utils';
 import { UserContext } from '../../pages/_app';
 import { assert } from 'joi';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 
 export default function CreateNovel() {
   const [title, setTitle] = useState('');
